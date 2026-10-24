@@ -1,0 +1,315 @@
+-- seed.sql — concaténation des chunks de supabase/seed/ (idempotent)
+
+-- 01 — Catégories et agence (idempotent)
+begin;
+insert into public.categories (name, slug, description, sort_order, is_active) values
+  ('Economy', 'economy', 'Véhicules de catégorie Economy', 1, true),
+  ('Luxury', 'luxury', 'Véhicules de catégorie Luxury', 2, true),
+  ('Sports', 'sports', 'Véhicules de catégorie Sports', 3, true),
+  ('SUV', 'suv', 'Véhicules de catégorie SUV', 4, true)
+on conflict (slug) do update set
+  name = excluded.name, description = excluded.description,
+  sort_order = excluded.sort_order, is_active = true;
+
+insert into public.agencies (name, address, city, phone, email, location, is_active)
+values (
+  'Velox Rentals — Abidjan Plateau', 'Boulevard Roume, Le Plateau', 'Abidjan',
+  '+225 27 20 00 00 00', 'contact@velox.ci',
+  ST_SetSRID(ST_MakePoint(-4.0197, 5.3204), 4326)::geography, true
+)
+on conflict (name) do nothing;
+commit;
+
+-- 02 — Véhicules (idempotent, upsert sur slug)
+begin;
+insert into public.vehicles (
+  slug, brand, model, title, description, category_id, business_line, status,
+  year, price_per_day, sale_price, deposit_amount, transmission, fuel_type, seats,
+  mileage, engine, top_speed, acceleration, features, rating, rating_count,
+  is_featured, is_published, badge, video_url, cover_image_url, agency_id, last_location
+) values
+  (
+    'porsche-911-carrera', 'Porsche', '911 Carrera S', 'Porsche 911 Carrera S',
+    'The Porsche 911 Carrera S is an icon of precision engineering.',
+    (select id from public.categories where slug = 'sports'),
+    'both', 'available',
+    2024, 380, 45600, 760,
+    'automatic', 'petrol', 2,
+    '3,200 km', '3.0L Twin-Turbo Flat-Six, 450 hp', '308 km/h', '3.5s 0–100 km/h',
+    '["PASM Suspension","Sport Chrono","Bose Audio","LED Matrix"]'::jsonb, 4.9, 0,
+    true, true, 'Most Popular',
+    'https://videos.pexels.com/video-files/5309381/5309381-hd_1920_1080_25fps.mp4', 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1000&q=80',
+    (select id from public.agencies where name = 'Velox Rentals — Abidjan Plateau'),
+    (select location from public.agencies where name = 'Velox Rentals — Abidjan Plateau')
+  ),
+  (
+    'mercedes-amg-gt63', 'Mercedes-AMG', 'GT 63 S', 'Mercedes-AMG GT 63 S',
+    'The AMG GT 63 S merges supercar performance with executive luxury.',
+    (select id from public.categories where slug = 'luxury'),
+    'both', 'available',
+    2024, 420, 50400, 840,
+    'automatic', null::text, 4,
+    null::text, null::text, null::text, null::text,
+    '[]'::jsonb, 4.9, 0,
+    true, true, 'New Arrival',
+    'https://videos.pexels.com/video-files/4488931/4488931-hd_1920_1080_25fps.mp4', '/mercedes_gt63_red_front.png',
+    (select id from public.agencies where name = 'Velox Rentals — Abidjan Plateau'),
+    (select location from public.agencies where name = 'Velox Rentals — Abidjan Plateau')
+  ),
+  (
+    'bmw-m5-competition', 'BMW', 'M5 Competition', 'BMW M5 Competition',
+    'The M5 Competition is the ultimate performance sedan.',
+    (select id from public.categories where slug = 'luxury'),
+    'both', 'available',
+    2024, 350, 42000, 700,
+    'automatic', null::text, 5,
+    null::text, null::text, null::text, null::text,
+    '[]'::jsonb, 4.8, 0,
+    true, true, null::text,
+    'https://videos.pexels.com/video-files/4488931/4488931-hd_1920_1080_25fps.mp4', '/bmw_m5_front_34_1778958277651.png',
+    (select id from public.agencies where name = 'Velox Rentals — Abidjan Plateau'),
+    (select location from public.agencies where name = 'Velox Rentals — Abidjan Plateau')
+  ),
+  (
+    'lamborghini-huracan-evo', 'Lamborghini', 'Huracán EVO', 'Lamborghini Huracán EVO',
+    null::text,
+    (select id from public.categories where slug = 'sports'),
+    'both', 'available',
+    2023, 950, 114000, 1900,
+    null::text, null::text, 2,
+    null::text, null::text, null::text, null::text,
+    '[]'::jsonb, 4.9, 0,
+    true, true, null::text,
+    'https://videos.pexels.com/video-files/4006151/4006151-hd_1920_1080_25fps.mp4', '/huracan_evo_front_orange_1778961306219.png',
+    (select id from public.agencies where name = 'Velox Rentals — Abidjan Plateau'),
+    (select location from public.agencies where name = 'Velox Rentals — Abidjan Plateau')
+  ),
+  (
+    'range-rover-autobiography', 'Range Rover', 'Autobiography', 'Range Rover Autobiography',
+    null::text,
+    (select id from public.categories where slug = 'suv'),
+    'both', 'available',
+    2024, 320, 38400, 640,
+    null::text, null::text, 5,
+    null::text, null::text, null::text, null::text,
+    '[]'::jsonb, 4.8, 0,
+    true, true, null::text,
+    'https://videos.pexels.com/video-files/3141208/3141208-hd_1920_1080_25fps.mp4', 'https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=1000&q=80',
+    (select id from public.agencies where name = 'Velox Rentals — Abidjan Plateau'),
+    (select location from public.agencies where name = 'Velox Rentals — Abidjan Plateau')
+  ),
+  (
+    'tesla-model-s-plaid', 'Tesla', 'Model S Plaid', 'Tesla Model S Plaid',
+    null::text,
+    (select id from public.categories where slug = 'luxury'),
+    'both', 'available',
+    2024, 280, 33600, 560,
+    null::text, null::text, 5,
+    null::text, null::text, null::text, null::text,
+    '[]'::jsonb, 4.7, 0,
+    false, true, null::text,
+    'https://videos.pexels.com/video-files/5309381/5309381-hd_1920_1080_25fps.mp4', 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=1000&q=80',
+    (select id from public.agencies where name = 'Velox Rentals — Abidjan Plateau'),
+    (select location from public.agencies where name = 'Velox Rentals — Abidjan Plateau')
+  ),
+  (
+    'audi-rs7-sportback', 'Audi', 'RS7 Sportback', 'Audi RS7 Sportback',
+    null::text,
+    (select id from public.categories where slug = 'luxury'),
+    'both', 'available',
+    2024, 310, 37200, 620,
+    null::text, null::text, 5,
+    null::text, null::text, null::text, null::text,
+    '[]'::jsonb, 4.8, 0,
+    false, true, null::text,
+    'https://videos.pexels.com/video-files/4488931/4488931-hd_1920_1080_25fps.mp4', 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=1000&q=80',
+    (select id from public.agencies where name = 'Velox Rentals — Abidjan Plateau'),
+    (select location from public.agencies where name = 'Velox Rentals — Abidjan Plateau')
+  ),
+  (
+    'bentley-continental-gt', 'Bentley', 'Continental GT', 'Bentley Continental GT',
+    null::text,
+    (select id from public.categories where slug = 'luxury'),
+    'both', 'available',
+    2023, 680, 81600, 1360,
+    null::text, null::text, 4,
+    null::text, null::text, null::text, null::text,
+    '[]'::jsonb, 4.9, 0,
+    true, true, null::text,
+    'https://videos.pexels.com/video-files/4488931/4488931-hd_1920_1080_25fps.mp4', 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=1000&q=80',
+    (select id from public.agencies where name = 'Velox Rentals — Abidjan Plateau'),
+    (select location from public.agencies where name = 'Velox Rentals — Abidjan Plateau')
+  ),
+  (
+    'ford-mustang-gt500', 'Ford', 'Mustang Shelby GT500', 'Ford Mustang Shelby GT500',
+    null::text,
+    (select id from public.categories where slug = 'sports'),
+    'both', 'available',
+    2023, 220, 26400, 440,
+    null::text, null::text, 4,
+    null::text, null::text, null::text, null::text,
+    '[]'::jsonb, 4.8, 0,
+    false, true, null::text,
+    'https://videos.pexels.com/video-files/4488931/4488931-hd_1920_1080_25fps.mp4', 'https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?w=1000&q=80',
+    (select id from public.agencies where name = 'Velox Rentals — Abidjan Plateau'),
+    (select location from public.agencies where name = 'Velox Rentals — Abidjan Plateau')
+  ),
+  (
+    'toyota-land-cruiser-300', 'Toyota', 'Land Cruiser 300', 'Toyota Land Cruiser 300',
+    null::text,
+    (select id from public.categories where slug = 'suv'),
+    'both', 'available',
+    2024, 195, 23400, 390,
+    null::text, null::text, 7,
+    null::text, null::text, null::text, null::text,
+    '[]'::jsonb, 4.7, 0,
+    false, true, null::text,
+    'https://videos.pexels.com/video-files/3141208/3141208-hd_1920_1080_25fps.mp4', 'https://images.unsplash.com/photo-1594502184342-2e12f877aa73?w=1000&q=80',
+    (select id from public.agencies where name = 'Velox Rentals — Abidjan Plateau'),
+    (select location from public.agencies where name = 'Velox Rentals — Abidjan Plateau')
+  ),
+  (
+    'volkswagen-golf-gti', 'Volkswagen', 'Golf GTI Clubsport', 'Volkswagen Golf GTI Clubsport',
+    null::text,
+    (select id from public.categories where slug = 'economy'),
+    'both', 'available',
+    2023, 89, 10700, 178,
+    null::text, null::text, 5,
+    null::text, null::text, null::text, null::text,
+    '[]'::jsonb, 4.6, 0,
+    false, true, null::text,
+    'https://videos.pexels.com/video-files/5309381/5309381-hd_1920_1080_25fps.mp4', 'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1000&q=80',
+    (select id from public.agencies where name = 'Velox Rentals — Abidjan Plateau'),
+    (select location from public.agencies where name = 'Velox Rentals — Abidjan Plateau')
+  ),
+  (
+    'honda-civic-type-r', 'Honda', 'Civic Type R (FL5)', 'Honda Civic Type R (FL5)',
+    null::text,
+    (select id from public.categories where slug = 'economy'),
+    'both', 'available',
+    2024, 95, 11400, 190,
+    null::text, null::text, 4,
+    null::text, null::text, null::text, null::text,
+    '[]'::jsonb, 4.9, 0,
+    false, true, null::text,
+    'https://videos.pexels.com/video-files/5309381/5309381-hd_1920_1080_25fps.mp4', 'https://images.unsplash.com/photo-1617624991444-2f3b9bf1c25b?w=1000&q=80',
+    (select id from public.agencies where name = 'Velox Rentals — Abidjan Plateau'),
+    (select location from public.agencies where name = 'Velox Rentals — Abidjan Plateau')
+  ),
+  (
+    'porsche-cayenne-turbo', 'Porsche', 'Cayenne Turbo E-Hybrid', 'Porsche Cayenne Turbo E-Hybrid',
+    null::text,
+    (select id from public.categories where slug = 'suv'),
+    'both', 'available',
+    2024, 340, 40800, 680,
+    null::text, null::text, 5,
+    null::text, null::text, null::text, null::text,
+    '[]'::jsonb, 4.8, 0,
+    false, true, 'Hybrid',
+    'https://videos.pexels.com/video-files/4488931/4488931-hd_1920_1080_25fps.mp4', 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=1000&q=80',
+    (select id from public.agencies where name = 'Velox Rentals — Abidjan Plateau'),
+    (select location from public.agencies where name = 'Velox Rentals — Abidjan Plateau')
+  )
+on conflict (slug) do update set
+  brand = excluded.brand, model = excluded.model, title = excluded.title,
+  description = excluded.description, category_id = excluded.category_id,
+  business_line = excluded.business_line, status = excluded.status,
+  year = excluded.year, price_per_day = excluded.price_per_day,
+  sale_price = excluded.sale_price, deposit_amount = excluded.deposit_amount,
+  transmission = excluded.transmission, fuel_type = excluded.fuel_type,
+  seats = excluded.seats, mileage = excluded.mileage, engine = excluded.engine,
+  top_speed = excluded.top_speed, acceleration = excluded.acceleration,
+  features = excluded.features, rating = excluded.rating,
+  is_featured = excluded.is_featured, badge = excluded.badge,
+  video_url = excluded.video_url, cover_image_url = excluded.cover_image_url,
+  agency_id = excluded.agency_id, last_location = excluded.last_location;
+commit;
+
+-- 03a — médias 1/1
+begin;
+delete from public.vehicle_media;
+insert into public.vehicle_media (vehicle_id, url, alt, kind, color_name, color_hex, sort_order)
+select v.id, t.url, t.alt, t.kind, t.color_name, t.color_hex, t.sort_order
+from (values
+
+  ('porsche-911-carrera', 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1000&q=80', 'Porsche 911 Carrera S — couverture', 'image', null::text, null::text, 0),
+  ('porsche-911-carrera', 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200&q=80', 'Porsche 911 Carrera S — Shark Blue', 'image', 'Shark Blue', '#0062a3', 1),
+  ('porsche-911-carrera', 'https://images.unsplash.com/photo-1611821064430-0d40291d0f0b?w=1200&q=80', 'Porsche 911 Carrera S — Shark Blue', 'image', 'Shark Blue', '#0062a3', 2),
+  ('porsche-911-carrera', 'https://images.unsplash.com/photo-1611016186353-9af58c69a533?w=1200&q=80', 'Porsche 911 Carrera S — Shark Blue', 'image', 'Shark Blue', '#0062a3', 3),
+  ('porsche-911-carrera', 'https://images.unsplash.com/photo-1525609004556-c46c7d6cf0a3?w=1200&q=80', 'Porsche 911 Carrera S — Guards Red', 'image', 'Guards Red', '#d5001c', 4),
+  ('porsche-911-carrera', 'https://images.unsplash.com/photo-1611245789456-c2eb8cbf5e7a?w=1200&q=80', 'Porsche 911 Carrera S — Jet Black', 'image', 'Jet Black', '#000000', 5),
+  ('porsche-911-carrera', 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=1200&q=80', 'Porsche 911 Carrera S — Racing Yellow', 'image', 'Racing Yellow', '#ffcc00', 6),
+  ('mercedes-amg-gt63', '/mercedes_gt63_red_front.png', 'Mercedes-AMG GT 63 S — couverture', 'image', null::text, null::text, 0),
+  ('mercedes-amg-gt63', '/mercedes_gt63_red_rear.png', 'Mercedes-AMG GT 63 S — Jupiter Red', 'image', 'Jupiter Red', '#8b0000', 1),
+  ('mercedes-amg-gt63', '/mercedes_gt63_red_interior.png', 'Mercedes-AMG GT 63 S — Jupiter Red', 'image', 'Jupiter Red', '#8b0000', 2),
+  ('mercedes-amg-gt63', '/mercedes_gt63_grey_front.png', 'Mercedes-AMG GT 63 S — Magno Grey', 'image', 'Magno Grey', '#3e4144', 3),
+  ('mercedes-amg-gt63', '/mercedes_gt63_black_front.png', 'Mercedes-AMG GT 63 S — Obsidian Black', 'image', 'Obsidian Black', '#0a0a0a', 4),
+  ('mercedes-amg-gt63', '/mercedes_gt63_white_front.png', 'Mercedes-AMG GT 63 S — Polar White', 'image', 'Polar White', '#ffffff', 5),
+  ('bmw-m5-competition', '/bmw_m5_front_34_1778958277651.png', 'BMW M5 Competition — couverture', 'image', null::text, null::text, 0),
+  ('bmw-m5-competition', '/bmw_m5_side_profile_1778958636326.png', 'BMW M5 Competition — Marina Bay Blue', 'image', 'Marina Bay Blue', '#2b4b7c', 1),
+  ('bmw-m5-competition', '/bmw_m5_rear_34_1778958651976.png', 'BMW M5 Competition — Marina Bay Blue', 'image', 'Marina Bay Blue', '#2b4b7c', 2),
+  ('bmw-m5-competition', 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=1200&q=80', 'BMW M5 Competition — Deep Grey Magno', 'image', 'Deep Grey Magno', '#4a4a4a', 3),
+  ('bmw-m5-competition', 'https://images.unsplash.com/photo-1508974239320-0a029497e820?w=1200&q=80', 'BMW M5 Competition — Isle of Man Green', 'image', 'Isle of Man Green', '#004d3d', 4),
+  ('bmw-m5-competition', 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=1200&q=80', 'BMW M5 Competition — Alpine White', 'image', 'Alpine White', '#ffffff', 5),
+  ('lamborghini-huracan-evo', '/huracan_evo_front_orange_1778961306219.png', 'Lamborghini Huracán EVO — couverture', 'image', null::text, null::text, 0),
+  ('lamborghini-huracan-evo', '/huracan_evo_side_orange_1778961352209.png', 'Lamborghini Huracán EVO — Arancio Xanto', 'image', 'Arancio Xanto', '#ff6a00', 1),
+  ('lamborghini-huracan-evo', 'https://images.unsplash.com/photo-1621135802920-133df287f89c?w=1200&q=80', 'Lamborghini Huracán EVO — Arancio Xanto', 'image', 'Arancio Xanto', '#ff6a00', 2),
+  ('lamborghini-huracan-evo', 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200&q=80', 'Lamborghini Huracán EVO — Verde Mantis', 'image', 'Verde Mantis', '#43c018', 3),
+  ('lamborghini-huracan-evo', 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=1200&q=80', 'Lamborghini Huracán EVO — Giallo Belenus', 'image', 'Giallo Belenus', '#ffee00', 4),
+  ('lamborghini-huracan-evo', 'https://images.unsplash.com/photo-1611245789456-c2eb8cbf5e7a?w=1200&q=80', 'Lamborghini Huracán EVO — Nero Noctis', 'image', 'Nero Noctis', '#000000', 5),
+  ('range-rover-autobiography', 'https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=1000&q=80', 'Range Rover Autobiography — couverture', 'image', null::text, null::text, 0),
+  ('range-rover-autobiography', 'https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=1200&q=80', 'Range Rover Autobiography — Santorini Black', 'image', 'Santorini Black', '#000000', 1),
+  ('range-rover-autobiography', 'https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=1200&q=80', 'Range Rover Autobiography — Santorini Black', 'image', 'Santorini Black', '#000000', 2),
+  ('range-rover-autobiography', 'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=1200&q=80', 'Range Rover Autobiography — Santorini Black', 'image', 'Santorini Black', '#000000', 3),
+  ('tesla-model-s-plaid', 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=1000&q=80', 'Tesla Model S Plaid — couverture', 'image', null::text, null::text, 0),
+  ('tesla-model-s-plaid', 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=1200&q=80', 'Tesla Model S Plaid — Stealth Grey', 'image', 'Stealth Grey', '#4a4a4a', 1),
+  ('tesla-model-s-plaid', 'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=1200&q=80', 'Tesla Model S Plaid — Stealth Grey', 'image', 'Stealth Grey', '#4a4a4a', 2),
+  ('tesla-model-s-plaid', 'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=1200&q=80', 'Tesla Model S Plaid — Stealth Grey', 'image', 'Stealth Grey', '#4a4a4a', 3),
+  ('tesla-model-s-plaid', 'https://images.unsplash.com/photo-1571127236894-93c0029b39d4?w=1200&q=80', 'Tesla Model S Plaid — Solid Black', 'image', 'Solid Black', '#0c0c0c', 4),
+  ('tesla-model-s-plaid', 'https://images.unsplash.com/photo-1541565907959-43d95a3b638f?w=1200&q=80', 'Tesla Model S Plaid — Ultra Red', 'image', 'Ultra Red', '#8b0000', 5),
+  ('tesla-model-s-plaid', 'https://images.unsplash.com/photo-1531306728370-e2ebd9d7bb99?w=1200&q=80', 'Tesla Model S Plaid — Pearl White', 'image', 'Pearl White', '#ffffff', 6),
+  ('audi-rs7-sportback', 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=1000&q=80', 'Audi RS7 Sportback — couverture', 'image', null::text, null::text, 0),
+  ('audi-rs7-sportback', 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=1200&q=80', 'Audi RS7 Sportback — Nardo Grey', 'image', 'Nardo Grey', '#8e9091', 1),
+  ('audi-rs7-sportback', 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=1200&q=80', 'Audi RS7 Sportback — Nardo Grey', 'image', 'Nardo Grey', '#8e9091', 2),
+  ('audi-rs7-sportback', 'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=1200&q=80', 'Audi RS7 Sportback — Nardo Grey', 'image', 'Nardo Grey', '#8e9091', 3),
+  ('audi-rs7-sportback', 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=1200&q=80', 'Audi RS7 Sportback — Mythos Black', 'image', 'Mythos Black', '#0c0c0c', 4),
+  ('audi-rs7-sportback', 'https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=1200&q=80', 'Audi RS7 Sportback — Tango Red', 'image', 'Tango Red', '#a80000', 5),
+  ('audi-rs7-sportback', 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=1200&q=80', 'Audi RS7 Sportback — Glacier White', 'image', 'Glacier White', '#ffffff', 6),
+  ('bentley-continental-gt', 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=1000&q=80', 'Bentley Continental GT — couverture', 'image', null::text, null::text, 0),
+  ('bentley-continental-gt', 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=1200&q=80', 'Bentley Continental GT — British Racing Green', 'image', 'British Racing Green', '#004225', 1),
+  ('bentley-continental-gt', 'https://images.unsplash.com/photo-1508974239320-0a029497e820?w=1200&q=80', 'Bentley Continental GT — British Racing Green', 'image', 'British Racing Green', '#004225', 2),
+  ('bentley-continental-gt', 'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=1200&q=80', 'Bentley Continental GT — British Racing Green', 'image', 'British Racing Green', '#004225', 3),
+  ('ford-mustang-gt500', 'https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?w=1000&q=80', 'Ford Mustang Shelby GT500 — couverture', 'image', null::text, null::text, 0),
+  ('ford-mustang-gt500', 'https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?w=1200&q=80', 'Ford Mustang Shelby GT500 — Grabber Blue', 'image', 'Grabber Blue', '#00a1ff', 1),
+  ('ford-mustang-gt500', 'https://images.unsplash.com/photo-1612461081702-86144e070927?w=1200&q=80', 'Ford Mustang Shelby GT500 — Grabber Blue', 'image', 'Grabber Blue', '#00a1ff', 2),
+  ('ford-mustang-gt500', 'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=1200&q=80', 'Ford Mustang Shelby GT500 — Grabber Blue', 'image', 'Grabber Blue', '#00a1ff', 3),
+  ('ford-mustang-gt500', 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1200&q=80', 'Ford Mustang Shelby GT500 — Twister Orange', 'image', 'Twister Orange', '#ff8c00', 4),
+  ('ford-mustang-gt500', 'https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=1200&q=80', 'Ford Mustang Shelby GT500 — Race Red', 'image', 'Race Red', '#ff0000', 5),
+  ('ford-mustang-gt500', 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1200&q=80', 'Ford Mustang Shelby GT500 — Oxford White', 'image', 'Oxford White', '#ffffff', 6),
+  ('toyota-land-cruiser-300', 'https://images.unsplash.com/photo-1594502184342-2e12f877aa73?w=1000&q=80', 'Toyota Land Cruiser 300 — couverture', 'image', null::text, null::text, 0),
+  ('toyota-land-cruiser-300', 'https://images.unsplash.com/photo-1594502184342-2e12f877aa73?w=1200&q=80', 'Toyota Land Cruiser 300 — Precious White', 'image', 'Precious White', '#fcfcfc', 1),
+  ('toyota-land-cruiser-300', 'https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=1200&q=80', 'Toyota Land Cruiser 300 — Precious White', 'image', 'Precious White', '#fcfcfc', 2),
+  ('toyota-land-cruiser-300', 'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=1200&q=80', 'Toyota Land Cruiser 300 — Precious White', 'image', 'Precious White', '#fcfcfc', 3),
+  ('toyota-land-cruiser-300', 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=1200&q=80', 'Toyota Land Cruiser 300 — Attitude Black', 'image', 'Attitude Black', '#1a1a1a', 4),
+  ('toyota-land-cruiser-300', 'https://images.unsplash.com/photo-1508974239320-0a029497e820?w=1200&q=80', 'Toyota Land Cruiser 300 — Avant-Garde Bronze', 'image', 'Avant-Garde Bronze', '#6a5d4d', 5),
+  ('volkswagen-golf-gti', 'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1000&q=80', 'Volkswagen Golf GTI Clubsport — couverture', 'image', null::text, null::text, 0),
+  ('volkswagen-golf-gti', 'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=1200&q=80', 'Volkswagen Golf GTI Clubsport — Pure White', 'image', 'Pure White', '#ffffff', 1),
+  ('volkswagen-golf-gti', 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=1200&q=80', 'Volkswagen Golf GTI Clubsport — Pure White', 'image', 'Pure White', '#ffffff', 2),
+  ('volkswagen-golf-gti', 'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=1200&q=80', 'Volkswagen Golf GTI Clubsport — Pure White', 'image', 'Pure White', '#ffffff', 3),
+  ('volkswagen-golf-gti', 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=1200&q=80', 'Volkswagen Golf GTI Clubsport — Moonstone Grey', 'image', 'Moonstone Grey', '#8e9091', 4),
+  ('volkswagen-golf-gti', 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200&q=80', 'Volkswagen Golf GTI Clubsport — Atlantic Blue', 'image', 'Atlantic Blue', '#1e3a5f', 5),
+  ('honda-civic-type-r', 'https://images.unsplash.com/photo-1617624991444-2f3b9bf1c25b?w=1000&q=80', 'Honda Civic Type R (FL5) — couverture', 'image', null::text, null::text, 0),
+  ('honda-civic-type-r', 'https://images.unsplash.com/photo-1617624991444-2f3b9bf1c25b?w=1200&q=80', 'Honda Civic Type R (FL5) — Championship White', 'image', 'Championship White', '#fcfcfc', 1),
+  ('honda-civic-type-r', 'https://images.unsplash.com/photo-1600706432502-75a0e286b92b?w=1200&q=80', 'Honda Civic Type R (FL5) — Championship White', 'image', 'Championship White', '#fcfcfc', 2),
+  ('honda-civic-type-r', 'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=1200&q=80', 'Honda Civic Type R (FL5) — Championship White', 'image', 'Championship White', '#fcfcfc', 3),
+  ('honda-civic-type-r', 'https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?w=1200&q=80', 'Honda Civic Type R (FL5) — Boost Blue', 'image', 'Boost Blue', '#007bff', 4),
+  ('honda-civic-type-r', 'https://images.unsplash.com/photo-1571127236894-93c0029b39d4?w=1200&q=80', 'Honda Civic Type R (FL5) — Crystal Black', 'image', 'Crystal Black', '#0c0c0c', 5),
+  ('porsche-cayenne-turbo', 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=1000&q=80', 'Porsche Cayenne Turbo E-Hybrid — couverture', 'image', null::text, null::text, 0),
+  ('porsche-cayenne-turbo', 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=1200&q=80', 'Porsche Cayenne Turbo E-Hybrid — Carrara White', 'image', 'Carrara White', '#fcfcfc', 1),
+  ('porsche-cayenne-turbo', 'https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=1200&q=80', 'Porsche Cayenne Turbo E-Hybrid — Carrara White', 'image', 'Carrara White', '#fcfcfc', 2),
+  ('porsche-cayenne-turbo', 'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=1200&q=80', 'Porsche Cayenne Turbo E-Hybrid — Carrara White', 'image', 'Carrara White', '#fcfcfc', 3),
+  ('porsche-cayenne-turbo', 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=1200&q=80', 'Porsche Cayenne Turbo E-Hybrid — Jet Black Metallic', 'image', 'Jet Black Metallic', '#020202', 4),
+  ('porsche-cayenne-turbo', 'https://images.unsplash.com/photo-1508974239320-0a029497e820?w=1200&q=80', 'Porsche Cayenne Turbo E-Hybrid — Montego Blue', 'image', 'Montego Blue', '#1e3a5f', 5)
+) as t(slug, url, alt, kind, color_name, color_hex, sort_order)
+join public.vehicles v on v.slug = t.slug;
+commit;

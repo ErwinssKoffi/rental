@@ -21,7 +21,7 @@ const GOLD = "#D6B25E";
 const FALLBACK_IMAGE = "/images/default-car.jpg";
 
 export default function CarCard({ car, index = 0 }) {
-  const { slug, brand, model, type, pricePerDay, transmission = "automatic", fuelType = "petrol", seats, image, available, badge } = car;
+  const { slug, brand, model, type, pricePerDay, salePrice, transmission = "automatic", fuelType = "petrol", seats, image, available, badge } = car;
 
   const [imgSrc, setImgSrc] = useState(image || FALLBACK_IMAGE);
   const [hovered, setHovered] = useState(false);
@@ -217,6 +217,14 @@ export default function CarCard({ car, index = 0 }) {
               </span>
               <span className="font-body text-zinc-500 text-[14px] mb-1">/ day</span>
             </div>
+            {salePrice != null && (
+              <p
+                className="font-body mt-1.5"
+                style={{ fontSize: "10px", color: GOLD, letterSpacing: "0.12em" }}
+              >
+                ACHETER DÈS {formatPrice(salePrice)}
+              </p>
+            )}
           </div>
 
           {/* View Car CTA */}

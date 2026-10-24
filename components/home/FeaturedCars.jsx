@@ -2,12 +2,10 @@
 
 import Link from "next/link";
 import CarCard from "@/components/cars/CarCard";
-import { getFeaturedCars } from "@/lib/utils";
-import cars from "@/data/cars";
 import SectionHeader from "@/components/ui/SectionHeader";
 
-export default function FeaturedCars() {
-  const featured = getFeaturedCars(cars).slice(0, 6);
+export default function FeaturedCars({ cars = [] }) {
+  const featured = cars.slice(0, 6);
 
   return (
     <section className="relative bg-[#050505] overflow-hidden" style={{ paddingTop: "60px", paddingBottom: "140px" }}>

@@ -4,7 +4,7 @@ import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
 
 export default function CarSidebar({ car }) {
-  const { pricePerDay, available, bookingCount, model } = car;
+  const { pricePerDay, salePrice, depositAmount, available, bookingCount, model } = car;
   
   // Calculate mock extended pricing based on daily
   const priceWeekly = pricePerDay * 6; // slightly discounted
@@ -62,6 +62,27 @@ export default function CarSidebar({ car }) {
 
         {/* ── Pricing Structure ── */}
         <div className="space-y-6 mb-8">
+          {/* Achat — véhicule également disponible à la vente */}
+          {salePrice != null && (
+            <div
+              className="rounded-xl p-4 border"
+              style={{
+                background: "rgba(214,178,94,0.08)",
+                borderColor: "rgba(214,178,94,0.35)",
+              }}
+            >
+              <p className="text-[10px] font-body text-[#D6B25E] uppercase tracking-widest mb-1">
+                Prix d&apos;achat
+              </p>
+              <p className="font-display font-bold text-2xl text-white">
+                {formatPrice(salePrice)}
+              </p>
+              <p className="text-[11px] font-body text-gray-400 mt-1">
+                Ce véhicule est disponible à la vente.
+              </p>
+            </div>
+          )}
+
           {/* Daily */}
           <div>
             <p className="text-[10px] font-body text-gray-400 uppercase tracking-widest mb-1">Daily Rate</p>
@@ -91,8 +112,10 @@ export default function CarSidebar({ car }) {
         <div className="bg-black/30 rounded-xl p-4 mb-8 border border-white/5 flex items-start gap-3">
           <svg className="w-5 h-5 text-gray-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
           <div>
-            <p className="text-sm text-white font-medium mb-0.5">Includes Full Insurance</p>
-            <p className="text-xs text-gray-400 font-body">Security deposit: AED 5,000 (Refundable)</p>
+            <p className="text-sm text-white font-medium mb-0.5">Assurance tous risques incluse</p>
+            <p className="text-xs text-gray-400 font-body">
+              Caution restituable : {depositAmount != null ? formatPrice(depositAmount) : "sur devis"}
+            </p>
           </div>
         </div>
 
