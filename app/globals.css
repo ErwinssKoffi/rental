@@ -109,9 +109,10 @@ body {
    marges, largeurs et respirations.
    ───────────────────────────────────────────────────────────── */
 :root {
-  --container-max: 1280px;
-  --container-gutter: clamp(24px, 4vw, 64px);
-  --section-pad-y: clamp(72px, 9vw, 120px);
+  /* Calé sur le conteneur de la Navbar : même largeur, mêmes gouttières */
+  --container-max: 1400px;
+  --container-gutter: clamp(24px, 5vw, 55px);
+  --section-pad-y: clamp(88px, 10vw, 144px);
   --surface-base: #050505;
   --surface-raised: #0a0a0a;
 }
@@ -155,7 +156,7 @@ body {
 
 /* Espacement homogène entre l'en-tête d'une section et son contenu */
 .section-head-gap {
-  margin-bottom: clamp(40px, 5vw, 56px);
+  margin-bottom: clamp(48px, 6vw, 72px);
 }
 
 /* Noise texture overlay */

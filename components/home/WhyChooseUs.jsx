@@ -175,7 +175,7 @@ export default function WhyChooseUs() {
               subtext="We don't just hand over the keys — we curate an experience. From booking to drop-off, expect nothing less than perfection."
               align="left"
               light={true}
-              className="mb-10"
+              className="mb-12"
             />
 
             {/* ── 2×2 Benefits grid ── */}
@@ -183,7 +183,7 @@ export default function WhyChooseUs() {
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
-                gap: "28px",
+                gap: "32px",
               }}
             >
               {benefits.map((b) => (
@@ -214,8 +214,8 @@ function BenefitItem({ benefit }) {
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "12px",
-        padding: "24px",
+        gap: "14px",
+        padding: "28px",
         borderRadius: "16px",
         border: "1px solid rgba(255,255,255,0.05)",
         background: "rgba(255,255,255,0.02)",

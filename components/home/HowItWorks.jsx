@@ -99,7 +99,7 @@ export default function HowItWorks() {
             display: "flex",
             justifyContent: "center",
             alignItems: "flex-start",
-            gap: "40px",
+            gap: "48px",
             flexWrap: "wrap",
           }}
         >
@@ -112,12 +112,12 @@ export default function HowItWorks() {
       <style>{`
         @media (max-width: 900px) {
           .steps-wrapper-responsive {
-            gap: 56px !important;
+            gap: 64px !important;
           }
         }
         @media (max-width: 560px) {
           .steps-wrapper-responsive {
-            gap: 44px !important;
+            gap: 48px !important;
           }
         }
       `}</style>
@@ -127,21 +127,21 @@ export default function HowItWorks() {
 
 function StepCard({ step, index }) {
   return (
-    <div
-      style={{
-        width: "280px",
-        textAlign: "center",
-        position: "relative",
-      }}
-      className="group flex flex-col items-center"
-    >
+      <div
+        style={{
+          width: "min(300px, 100%)",
+          textAlign: "center",
+          position: "relative",
+        }}
+        className="group flex flex-col items-center"
+      >
       {/* Luxury Icon Box */}
       <div
         className="icon-box"
         style={{
           width: "100px",
           height: "100px",
-          margin: "0 auto 25px",
+          margin: "0 auto 32px",
           borderRadius: "24px",
           background: "rgba(255,255,255,0.02)",
           border: "1px solid rgba(255,255,255,0.08)",
@@ -196,7 +196,7 @@ function StepCard({ step, index }) {
         className="font-display transition-colors duration-300 group-hover:text-gold"
         style={{
           fontSize: "24px",
-          marginBottom: "12px",
+          marginBottom: "16px",
           color: "white",
           fontWeight: "600",
           letterSpacing: "-0.01em",

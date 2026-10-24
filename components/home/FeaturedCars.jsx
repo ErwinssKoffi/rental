@@ -81,8 +81,8 @@ export default function FeaturedCars({ cars = [] }) {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
-            gap: "32px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 360px), 1fr))",
+            gap: "40px",
           }}
         >
           {featured.map((car, index) => (

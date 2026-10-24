@@ -92,16 +92,8 @@ export default function Footer() {
         }}
       />
 
-      {/* ── Centered content wrapper ── */}
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "1280px",
-          margin: "0 auto",
-          paddingLeft: "clamp(24px, 4vw, 64px)",
-          paddingRight: "clamp(24px, 4vw, 64px)",
-        }}
-      >
+      {/* ── Centered content wrapper — aligné sur la marge de la Navbar ── */}
+      <div className="page-container">
         {/* ── Main footer grid ── */}
         <div
           style={{

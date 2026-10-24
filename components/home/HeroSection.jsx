@@ -60,7 +60,7 @@ export default function HeroSection() {
       {/* ── Main content — même conteneur que toutes les sections ── */}
       <div className="relative z-10 page-container" style={{ paddingTop: "10rem", paddingBottom: "7rem" }}>
         <motion.div
-          className="flex flex-col items-start text-left gap-7 lg:gap-8"
+          className="flex flex-col items-start text-left gap-8 lg:gap-10"
           style={{ maxWidth: "660px" }}
           variants={containerVariants}
           initial="hidden"
@@ -139,7 +139,7 @@ export default function HeroSection() {
           </motion.div>
 
           {/* ── CTA Buttons — side by side, content-sized ── */}
-          <motion.div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto" variants={itemVariants}>
+          <motion.div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-5 w-full sm:w-auto" variants={itemVariants}>
             {/* Primary — gold pill */}
             <Link
               href="/cars"
@@ -178,7 +178,7 @@ export default function HeroSection() {
 
           {/* ── Stats ── */}
           <motion.div
-            className="flex flex-wrap items-center mt-4 gap-y-4"
+            className="flex flex-wrap items-center mt-6 gap-y-6"
             variants={itemVariants}
           >
             {[
@@ -188,7 +188,7 @@ export default function HeroSection() {
             ].map((stat, i) => (
               <div key={stat.label} className="flex items-center">
                 {/* Stat block */}
-                <div className="flex flex-col gap-[6px] pr-8 sm:pr-12">
+                <div className="flex flex-col gap-2 pr-10 sm:pr-14">
                   <p
                     className="font-display font-light text-white tracking-tight leading-none"
                     style={{ fontSize: "clamp(2rem, 3.5vw, 3rem)" }}
@@ -209,8 +209,8 @@ export default function HeroSection() {
                     className="hidden sm:block"
                     style={{
                       width: "1px",
-                      height: "52px",
-                      marginRight: "52px",
+                      height: "56px",
+                      marginRight: "56px",
                       background: "linear-gradient(to bottom, transparent, rgba(201,168,76,0.28), transparent)",
                     }}
                   />

@@ -115,7 +115,7 @@ export default function CTABanner() {
               lineHeight: "1.7",
               color: "rgba(232,232,232,0.55)",
               maxWidth: "480px",
-              margin: "0 auto 32px auto",
+              margin: "0 auto 40px auto",
               position: "relative",
             }}
           >
@@ -128,10 +128,10 @@ export default function CTABanner() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: "12px",
+              gap: "14px",
               flexWrap: "wrap",
               position: "relative",
-              marginBottom: "24px",
+              marginBottom: "32px",
             }}
           >
             {/* Primary CTA */}

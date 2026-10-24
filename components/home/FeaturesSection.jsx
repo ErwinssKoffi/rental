@@ -62,7 +62,7 @@ export default function FeaturesSection() {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "24px",
+            gap: "28px",
           }}
           className="features-grid"
         >
@@ -75,7 +75,7 @@ export default function FeaturesSection() {
                 flexDirection: "column",
                 alignItems: "center",
                 textAlign: "center",
-                padding: "32px 24px",
+                padding: "38px 28px",
                 borderRadius: "20px",
                 border: "1px solid rgba(255,255,255,0.05)",
                 background: "rgba(255,255,255,0.02)",
