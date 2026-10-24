@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { LogOut, Car, Tags, ShieldCheck, CalendarClock, MapPin, BadgeDollarSign } from "lucide-react";
+import { LogOut, Car, Tags, ShieldCheck, CalendarClock, MapPin, BadgeDollarSign, LayoutDashboard } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import AdminLogin from "./AdminLogin";
 import VehicleList from "./fleet/VehicleList";
@@ -9,9 +9,11 @@ import CategoryManager from "./categories/CategoryManager";
 import BookingsManager from "./bookings/BookingsManager";
 import AdminMapPanel from "./map/AdminMapPanel";
 import SalesDashboard from "./sales/SalesDashboard";
+import ReportsDashboard from "./reports/ReportsDashboard";
 import { Spinner } from "./ui";
 
 const TABS = [
+  { id: "reports", label: "Rapports", icon: LayoutDashboard },
   { id: "fleet", label: "Flotte & annonces", icon: Car },
   { id: "bookings", label: "Réservations", icon: CalendarClock },
   { id: "sales", label: "Ventes", icon: BadgeDollarSign },
@@ -24,7 +26,7 @@ export default function AdminApp() {
   const [status, setStatus] = useState("loading"); // loading | anon | denied | ready
   const [profile, setProfile] = useState(null);
   const [email, setEmail] = useState(null);
-  const [tab, setTab] = useState("fleet");
+  const [tab, setTab] = useState("reports");
 
   const checkSession = useCallback(async () => {
     setStatus("loading");
@@ -180,6 +182,7 @@ export default function AdminApp() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-10">
+        {tab === "reports" && <ReportsDashboard />}
         {tab === "fleet" && <VehicleList />}
         {tab === "bookings" && <BookingsManager />}
         {tab === "sales" && <SalesDashboard />}
