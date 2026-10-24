@@ -9,6 +9,7 @@ import CarPerformance from "@/components/cars/CarPerformance";
 import CarColors from "@/components/cars/CarColors";
 import CarCard from "@/components/cars/CarCard";
 import BookingWidget from "@/components/booking/BookingWidget";
+import PurchaseWidget from "@/components/sales/PurchaseWidget";
 
 function FadeInView({ children, delay = 0 }) {
   const [isVisible, setIsVisible] = useState(false);
@@ -234,6 +235,7 @@ export default function CarClientView({ car, relatedCars }) {
           {/* ── Right Column: Sticky Sidebar ── */}
           <div className="w-full lg:w-[420px] shrink-0">
             <BookingWidget car={car} />
+            <PurchaseWidget car={car} />
             <CarSidebar car={car} />
           </div>
 

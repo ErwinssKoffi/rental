@@ -8,6 +8,7 @@ import {
   LogOut,
   ShieldCheck,
   BadgeCheck,
+  BadgeDollarSign,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -17,6 +18,12 @@ import {
   formatDate,
   formatMoney,
 } from "@/lib/bookings";
+import {
+  SALE_STATUS_LABELS,
+  SALE_STATUS_TONES,
+  LEAD_STATUS_LABELS,
+  LEAD_STATUS_TONES,
+} from "@/lib/sales";
 import { Pill, Spinner, Notice, Btn } from "@/components/admin/ui";
 
 function StatusPill({ status }) {
@@ -33,6 +40,8 @@ export default function AccountApp() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [bookings, setBookings] = useState([]);
+  const [leads, setLeads] = useState([]);
+  const [sales, setSales] = useState([]);
   const [error, setError] = useState(null);
 
   const load = useCallback(async () => {
@@ -47,25 +56,45 @@ export default function AccountApp() {
       return;
     }
 
-    const [{ data: prof, error: profErr }, { data: bks, error: bkErr }] =
-      await Promise.all([
-        supabase
-          .from("profiles")
-          .select("first_name, last_name, phone, role, kyc_verified, is_active")
-          .eq("id", u.id)
-          .single(),
-        supabase
-          .from("bookings")
-          .select(
-            "*, vehicle:vehicles(id, slug, brand, model, cover_image_url)"
-          )
-          .order("created_at", { ascending: false }),
-      ]);
+    const [
+      { data: prof, error: profErr },
+      { data: bks, error: bkErr },
+      { data: lds, error: leadErr },
+      { data: sls, error: saleErr },
+    ] = await Promise.all([
+      supabase
+        .from("profiles")
+        .select("first_name, last_name, phone, role, kyc_verified, is_active")
+        .eq("id", u.id)
+        .single(),
+      supabase
+        .from("bookings")
+        .select(
+          "*, vehicle:vehicles(id, slug, brand, model, cover_image_url)"
+        )
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("leads")
+        .select(
+          "id, status, source, message, created_at, vehicle:vehicles(id, slug, brand, model)"
+        )
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("vehicle_sales")
+        .select(
+          "id, reference, status, payment_status, agreed_price, asking_price, created_at, sold_at, vehicle:vehicles(id, slug, brand, model)"
+        )
+        .order("created_at", { ascending: false }),
+    ]);
 
     if (profErr) setError(profErr.message);
     else setProfile(prof);
     if (bkErr) setError(bkErr.message);
     else setBookings(bks ?? []);
+    if (leadErr) setError(leadErr.message);
+    else setLeads(lds ?? []);
+    if (saleErr) setError(saleErr.message);
+    else setSales(sls ?? []);
     setLoading(false);
   }, [supabase]);
 
@@ -92,6 +121,8 @@ export default function AccountApp() {
     setUser(null);
     setProfile(null);
     setBookings([]);
+    setLeads([]);
+    setSales([]);
   }
 
   if (loading) {
@@ -247,6 +278,92 @@ export default function AccountApp() {
                       </Btn>
                     )}
                   </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Achats : dossiers de vente + demandes (leads) */}
+        <section className="mt-14">
+          <h2 className="font-display text-xl font-bold flex items-center gap-2 mb-5">
+            <BadgeDollarSign size={18} className="text-[#D4AF37]" />
+            Mes achats ({sales.length}) & demandes ({leads.length})
+          </h2>
+
+          {sales.length === 0 && leads.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-white/15 p-12 text-center">
+              <BadgeDollarSign size={30} className="mx-auto text-white/30 mb-4" />
+              <p className="text-white/55 font-body mb-5">
+                Aucun dossier d&apos;achat pour le moment.
+              </p>
+              <Link
+                href="/cars"
+                className="inline-block rounded-full px-6 py-3 text-[12px] font-bold uppercase tracking-widest bg-gradient-to-br from-[#E0BE6F] to-[#B68A2F] text-black"
+              >
+                Voir les véhicules à vendre
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {sales.map((s) => (
+                <article
+                  key={s.id}
+                  className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 flex flex-wrap items-center gap-5"
+                >
+                  <div className="flex-1 min-w-[200px]">
+                    <p className="text-[11px] text-white/40 uppercase tracking-widest">
+                      {s.reference}
+                    </p>
+                    <Link
+                      href={`/cars/${s.vehicle?.slug ?? ""}`}
+                      className="font-semibold text-white hover:text-[#E0BE6F] transition-colors"
+                    >
+                      {s.vehicle
+                        ? `${s.vehicle.brand} ${s.vehicle.model}`
+                        : "Véhicule"}
+                    </Link>
+                    <p className="text-[11px] text-white/45 mt-1">
+                      Paiement : {PAYMENT_STATUS_LABELS[s.payment_status] ?? s.payment_status}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold">
+                      {formatMoney(s.agreed_price ?? s.asking_price)}
+                    </p>
+                  </div>
+                  <Pill tone={SALE_STATUS_TONES[s.status] ?? "neutral"}>
+                    {SALE_STATUS_LABELS[s.status] ?? s.status}
+                  </Pill>
+                </article>
+              ))}
+
+              {leads.map((l) => (
+                <article
+                  key={l.id}
+                  className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 flex flex-wrap items-center gap-5"
+                >
+                  <div className="flex-1 min-w-[200px]">
+                    <p className="text-[11px] text-white/40 uppercase tracking-widest">
+                      Demande du {formatDate(l.created_at)}
+                    </p>
+                    <Link
+                      href={`/cars/${l.vehicle?.slug ?? ""}`}
+                      className="font-semibold text-white/80 hover:text-[#E0BE6F] transition-colors"
+                    >
+                      {l.vehicle
+                        ? `${l.vehicle.brand} ${l.vehicle.model}`
+                        : "Véhicule dissocié"}
+                    </Link>
+                    {l.message && (
+                      <p className="text-[12px] text-white/45 mt-1 line-clamp-1">
+                        “{l.message}”
+                      </p>
+                    )}
+                  </div>
+                  <Pill tone={LEAD_STATUS_TONES[l.status] ?? "neutral"}>
+                    {LEAD_STATUS_LABELS[l.status] ?? l.status}
+                  </Pill>
                 </article>
               ))}
             </div>
