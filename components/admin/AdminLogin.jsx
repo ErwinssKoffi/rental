@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { LogIn, ShieldAlert } from "lucide-react";
+import { LogIn, UserPlus, ShieldAlert } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Btn, Field, Notice, TextInput } from "./ui";
 
@@ -14,15 +14,53 @@ function LoginInner({ denied = false }) {
   const redirectTo =
     nextParam && nextParam.startsWith("/") ? nextParam : "/admin";
 
+  const [mode, setMode] = useState("signin"); // signin | signup
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [info, setInfo] = useState(null);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
+    setInfo(null);
     setLoading(true);
+
+    if (mode === "signup") {
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: {
+            first_name: firstName.trim(),
+            last_name: lastName.trim(),
+          },
+        },
+      });
+
+      setLoading(false);
+      if (signUpError) {
+        setError(
+          signUpError.message === "User already registered"
+            ? "Un compte existe déjà avec cet e-mail."
+            : signUpError.message
+        );
+        return;
+      }
+      if (data.session) {
+        router.replace(redirectTo);
+        router.refresh();
+      } else {
+        setInfo(
+          "Compte créé. Vérifiez votre e-mail pour confirmer l'inscription, puis connectez-vous."
+        );
+        setMode("signin");
+      }
+      return;
+    }
 
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email: email.trim(),
@@ -45,6 +83,8 @@ function LoginInner({ denied = false }) {
     }
   }
 
+  const isSignup = mode === "signup";
+
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-6">
       <div
@@ -59,14 +99,16 @@ function LoginInner({ denied = false }) {
               color: "#000",
             }}
           >
-            <LogIn size={24} />
+            {isSignup ? <UserPlus size={24} /> : <LogIn size={24} />}
           </div>
           <p className="eyebrow">Accès restreint</p>
           <h1 className="font-display text-3xl font-bold text-white mt-2">
-            Espace personnel
+            {isSignup ? "Créer mon compte" : "Espace personnel"}
           </h1>
           <p className="text-white/50 text-sm mt-2 font-body">
-            Connectez-vous avec un compte membre de l&apos;équipe Velox.
+            {isSignup
+              ? "Réservez et suivez vos locations en quelques clics."
+              : "Connectez-vous avec votre compte Velox."}
           </p>
         </div>
 
@@ -85,14 +127,41 @@ function LoginInner({ denied = false }) {
             <Notice type="error">{error}</Notice>
           </div>
         )}
+        {info && (
+          <div className="mb-5">
+            <Notice type="success">{info}</Notice>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {isSignup && (
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Prénom">
+                <TextInput
+                  required
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Aya"
+                  autoComplete="given-name"
+                />
+              </Field>
+              <Field label="Nom">
+                <TextInput
+                  required
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Koffi"
+                  autoComplete="family-name"
+                />
+              </Field>
+            </div>
+          )}
           <Field label="E-mail">
             <TextInput
               type="email"
               required
               autoComplete="username"
-              placeholder="admin@velox.ci"
+              placeholder="vous@exemple.ci"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -101,16 +170,29 @@ function LoginInner({ denied = false }) {
             <TextInput
               type="password"
               required
-              autoComplete="current-password"
+              minLength={6}
+              autoComplete={isSignup ? "new-password" : "current-password"}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </Field>
           <Btn type="submit" loading={loading} className="w-full">
-            Se connecter
+            {isSignup ? "Créer mon compte" : "Se connecter"}
           </Btn>
         </form>
+
+        <button
+          onClick={() => {
+            setMode(isSignup ? "signin" : "signup");
+            setError(null);
+          }}
+          className="w-full mt-5 text-center text-sm text-white/50 hover:text-[#E0BE6F] transition-colors font-body"
+        >
+          {isSignup
+            ? "Déjà inscrit ? Se connecter"
+            : "Pas encore de compte ? Créer un compte client"}
+        </button>
       </div>
     </div>
   );

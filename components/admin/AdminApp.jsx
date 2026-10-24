@@ -1,15 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { LogOut, Car, Tags, ShieldCheck } from "lucide-react";
+import { LogOut, Car, Tags, ShieldCheck, CalendarClock } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import AdminLogin from "./AdminLogin";
 import VehicleList from "./fleet/VehicleList";
 import CategoryManager from "./categories/CategoryManager";
+import BookingsManager from "./bookings/BookingsManager";
 import { Spinner } from "./ui";
 
 const TABS = [
   { id: "fleet", label: "Flotte & annonces", icon: Car },
+  { id: "bookings", label: "Réservations", icon: CalendarClock },
   { id: "categories", label: "Catégories", icon: Tags },
 ];
 
@@ -175,6 +177,7 @@ export default function AdminApp() {
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-10">
         {tab === "fleet" && <VehicleList />}
+        {tab === "bookings" && <BookingsManager />}
         {tab === "categories" && <CategoryManager />}
       </main>
     </div>
