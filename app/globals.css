@@ -257,3 +257,58 @@ h3, .h3 {
   color: #ffffff;
   margin-bottom: 1.5rem;
 }
+
+/* ============ Carte GPS (Leaflet) ============ */
+.velox-marker {
+  background: transparent;
+  border: none;
+}
+.velox-pin {
+  position: relative;
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #d4af37;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.85);
+}
+.velox-pin.is-rented {
+  background: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.85);
+  color: #38bdf8;
+}
+.velox-pin.is-maintenance {
+  background: #f87171;
+  box-shadow: 0 0 12px rgba(248, 113, 113, 0.85);
+  color: #f87171;
+}
+.velox-pin.is-available {
+  color: #d4af37;
+}
+.velox-pin-pulse {
+  position: absolute;
+  inset: -7px;
+  border-radius: 9999px;
+  border: 2px solid currentColor;
+  opacity: 0;
+  animation: velox-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes velox-ping {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  80%,
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+.leaflet-container {
+  font-family: inherit;
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 14px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+}

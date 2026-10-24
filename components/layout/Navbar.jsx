@@ -13,6 +13,7 @@ const GOLD = "#D6B25E";
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Inventory", href: "/cars" },
+  { label: "Carte GPS", href: "/map" },
   { label: "Brands", href: "/brands" },
   { label: "Services", href: "/services" },
   { label: "About Us", href: "/about" },
