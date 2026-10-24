@@ -47,22 +47,15 @@ const categories = [
 export default function FleetCategories() {
   return (
     <section
-      style={{ background: "#070707", padding: "120px 0", position: "relative", overflow: "hidden" }}
+      className="section-block surface-raised"
+      style={{ position: "relative", overflow: "hidden" }}
     >
       {/* Top edge line */}
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "1px", background: "linear-gradient(90deg, transparent, rgba(212,175,55,0.12), transparent)" }} />
+      <div className="section-edge" />
 
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "1280px",
-          margin: "0 auto",
-          paddingLeft: "clamp(24px, 4vw, 64px)",
-          paddingRight: "clamp(24px, 4vw, 64px)",
-        }}
-      >
+      <div className="page-container">
         {/* ── Centered section header ── */}
-        <div style={{ textAlign: "center", maxWidth: "640px", margin: "0 auto 56px auto" }}>
+        <div className="section-head-gap" style={{ textAlign: "center", maxWidth: "640px", marginInline: "auto" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginBottom: "20px" }}>
             <div style={{ width: "28px", height: "1px", background: "linear-gradient(90deg, transparent, #D4AF37)" }} />
             <span className="font-body font-semibold uppercase" style={{ fontSize: "10px", color: "#D4AF37", letterSpacing: "0.35em" }}>

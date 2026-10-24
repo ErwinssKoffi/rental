@@ -7,9 +7,8 @@ const GOLD = "#D4AF37";
 export default function CTABanner() {
   return (
     <section
+      className="section-block surface-raised"
       style={{
-        background: "#050505",
-        padding: "80px 0",
         position: "relative",
         overflow: "hidden",
       }}
@@ -30,23 +29,10 @@ export default function CTABanner() {
         style={{ position: "absolute", inset: 0, opacity: 0.15, pointerEvents: "none" }}
       />
       {/* Top/bottom edge lines */}
-      <div
-        style={{
-          position: "absolute", top: 0, left: 0, right: 0, height: "1px",
-          background: "linear-gradient(90deg, transparent, rgba(212,175,55,0.2), transparent)",
-        }}
-      />
+      <div className="section-edge" />
 
       {/* ── Centered container ── */}
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "1280px",
-          margin: "0 auto",
-          paddingLeft: "clamp(24px, 4vw, 64px)",
-          paddingRight: "clamp(24px, 4vw, 64px)",
-        }}
-      >
+      <div className="page-container">
         {/* ── Glassmorphism CTA box ── */}
         <div
           style={{

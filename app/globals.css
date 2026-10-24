@@ -102,6 +102,62 @@ body {
   padding-bottom: 7rem;
 }
 
+/* ─────────────────────────────────────────────────────────────
+   Système de layout unifié — page d'accueil
+   Un seul conteneur, un seul rythme vertical, deux tons de fond
+   alternés pour que toutes les sections partagent les mêmes
+   marges, largeurs et respirations.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --container-max: 1280px;
+  --container-gutter: clamp(24px, 4vw, 64px);
+  --section-pad-y: clamp(72px, 9vw, 120px);
+  --surface-base: #050505;
+  --surface-raised: #0a0a0a;
+}
+
+/* Conteneur de contenu : mêmes bords gauche/droit sur toutes les sections */
+.page-container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-gutter);
+}
+
+/* Rythme vertical homogène entre sections */
+.section-block {
+  padding-block: var(--section-pad-y);
+}
+
+/* Tons de fond alternés */
+.surface-base {
+  background: var(--surface-base);
+}
+.surface-raised {
+  background: var(--surface-raised);
+}
+
+/* Filet doré discret en haut des sections surélevées */
+.section-edge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(212, 175, 55, 0.12),
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* Espacement homogène entre l'en-tête d'une section et son contenu */
+.section-head-gap {
+  margin-bottom: clamp(40px, 5vw, 56px);
+}
+
 /* Noise texture overlay */
 .noise {
   position: relative;

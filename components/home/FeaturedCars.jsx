@@ -8,7 +8,7 @@ export default function FeaturedCars({ cars = [] }) {
   const featured = cars.slice(0, 6);
 
   return (
-    <section className="relative bg-[#050505] overflow-hidden" style={{ paddingTop: "60px", paddingBottom: "140px" }}>
+    <section className="relative section-block surface-base overflow-hidden">
 
       {/* ── Ambient background atmosphere ── */}
       <div
@@ -21,16 +21,10 @@ export default function FeaturedCars({ cars = [] }) {
       {/* Noise texture for depth */}
       <div className="absolute inset-0 noise pointer-events-none opacity-30" />
 
-      <div
-        className="relative z-10"
-        style={{
-          width: "min(1400px, 92%)",
-          margin: "0 auto",
-        }}
-      >
+      <div className="relative z-10 page-container">
 
         {/* ── Section Header ── */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-20">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 section-head-gap">
 
           <SectionHeader
             eyebrow="Curated Selection"
@@ -87,24 +81,14 @@ export default function FeaturedCars({ cars = [] }) {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))",
-            gap: "38px",
-            marginTop: "70px"
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
+            gap: "32px",
           }}
         >
           {featured.map((car, index) => (
             <CarCard key={car.id} car={car} index={index} />
           ))}
         </div>
-
-        {/* ── Bottom divider ── */}
-        <div
-          className="w-full h-px mt-24"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
-          }}
-        />
       </div>
     </section>
   );

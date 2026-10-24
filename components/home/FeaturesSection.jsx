@@ -51,39 +51,18 @@ const GOLD = "#D4AF37";
 
 export default function FeaturesSection() {
   return (
-    <section
-      style={{
-        background: "#070707",
-        padding: "0 0 80px 0",
-        position: "relative",
-      }}
-    >
-      {/* ── Centered container ── */}
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "1280px",
-          margin: "0 auto",
-          paddingLeft: "clamp(24px, 4vw, 64px)",
-          paddingRight: "clamp(24px, 4vw, 64px)",
-        }}
-      >
-        {/* Divider from FeaturedCars above */}
-        <div
-          style={{
-            width: "100%",
-            height: "1px",
-            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
-            marginBottom: "60px",
-          }}
-        />
+    <section className="section-block surface-raised" style={{ position: "relative" }}>
+      {/* Filet de séparation haut, aligné sur les autres sections surélevées */}
+      <div className="section-edge" />
 
+      {/* ── Centered container ── */}
+      <div className="page-container">
         {/* 4-column grid */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "20px",
+            gap: "24px",
           }}
           className="features-grid"
         >

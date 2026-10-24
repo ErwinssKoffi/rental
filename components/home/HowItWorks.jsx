@@ -45,18 +45,15 @@ export default function HowItWorks() {
   return (
     <section
       id="how-it-works"
+      className="section-block surface-base"
       style={{
         width: "100%",
-        minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "flex-start",
-        padding: "60px 60px 0px 60px",
-        background: "#050505",
         position: "relative",
         overflow: "hidden",
       }}
-      className="how-section-responsive"
     >
       {/* Luxury Background Glow */}
       <div
@@ -76,15 +73,14 @@ export default function HowItWorks() {
 
       {/* Main Container */}
       <div
+        className="page-container"
         style={{
-          width: "100%",
-          maxWidth: "1450px",
           textAlign: "center",
           position: "relative",
           zIndex: 10,
         }}
       >
-        <div className="flex flex-col items-center justify-center text-center w-full" style={{ marginBottom: "40px" }}>
+        <div className="flex flex-col items-center justify-center text-center w-full section-head-gap">
           <p className="text-[#d4af37] uppercase tracking-[6px] text-xs font-semibold mb-3 font-body">
             Simple Process
           </p>
@@ -114,34 +110,14 @@ export default function HowItWorks() {
       </div>
 
       <style>{`
-        @media(max-width: 1000px) {
+        @media (max-width: 900px) {
           .steps-wrapper-responsive {
-            gap: 70px !important;
-          }
-          .main-title-responsive {
-            font-size: 85px !important;
+            gap: 56px !important;
           }
         }
-        @media(max-width: 992px) {
-          .how-section-responsive {
-            padding: 100px 40px !important;
-          }
-          .main-title-responsive {
-            font-size: 70px !important;
-          }
+        @media (max-width: 560px) {
           .steps-wrapper-responsive {
-            gap: 60px !important;
-          }
-          .desc-responsive {
-            font-size: 20px !important;
-          }
-        }
-        @media(max-width: 600px) {
-          .how-section-responsive {
-            padding: 80px 20px !important;
-          }
-          .main-title-responsive {
-            font-size: 50px !important;
+            gap: 44px !important;
           }
         }
       `}</style>

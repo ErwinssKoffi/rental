@@ -51,9 +51,8 @@ const GOLD = "#D4AF37";
 export default function WhyChooseUs() {
   return (
     <section
+      className="section-block surface-base"
       style={{
-        background: "#080808",
-        padding: "140px 0",
         position: "relative",
         overflow: "hidden",
       }}
@@ -69,25 +68,10 @@ export default function WhyChooseUs() {
         }}
       />
       {/* Top edge */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0, left: 0, right: 0,
-          height: "1px",
-          background: "linear-gradient(90deg, transparent, rgba(212,175,55,0.12), transparent)",
-        }}
-      />
+      <div className="section-edge" />
 
       {/* ── Centered container ── */}
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "1280px",
-          margin: "0 auto",
-          paddingLeft: "clamp(24px, 4vw, 64px)",
-          paddingRight: "clamp(24px, 4vw, 64px)",
-        }}
-      >
+      <div className="page-container">
         {/* ── 2-column grid: Image | Content ── */}
         <div
           style={{
@@ -191,7 +175,7 @@ export default function WhyChooseUs() {
               subtext="We don't just hand over the keys — we curate an experience. From booking to drop-off, expect nothing less than perfection."
               align="left"
               light={true}
-              className="mb-48"
+              className="mb-10"
             />
 
             {/* ── 2×2 Benefits grid ── */}

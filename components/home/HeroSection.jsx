@@ -57,8 +57,8 @@ export default function HeroSection() {
       {/* ── Grid pattern ── */}
       <div className="absolute inset-0 grid-pattern opacity-25" />
 
-      {/* ── Main content ── */}
-      <div className="relative z-10 w-full max-w-[1400px] mx-auto pl-8 sm:pl-16 md:pl-28 lg:pl-40 xl:pl-48 pr-6 sm:pr-10 pt-40 pb-28">
+      {/* ── Main content — même conteneur que toutes les sections ── */}
+      <div className="relative z-10 page-container" style={{ paddingTop: "10rem", paddingBottom: "7rem" }}>
         <motion.div
           className="flex flex-col items-start text-left gap-7 lg:gap-8"
           style={{ maxWidth: "660px" }}
