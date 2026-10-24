@@ -24,6 +24,7 @@ import {
   LEAD_STATUS_LABELS,
   LEAD_STATUS_TONES,
 } from "@/lib/sales";
+import KycDocuments from "./KycDocuments";
 import { Pill, Spinner, Notice, Btn } from "@/components/admin/ui";
 
 function StatusPill({ status }) {
@@ -369,6 +370,12 @@ export default function AccountApp() {
             </div>
           )}
         </section>
+
+        {/* Vérification d'identité */}
+        <KycDocuments user={user} kycVerified={!!profile?.kyc_verified} />
+
+        {/* Contrats */}
+        <CustomerContracts user={user} />
       </div>
     </div>
   );

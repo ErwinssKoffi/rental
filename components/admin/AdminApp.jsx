@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { LogOut, Car, Tags, ShieldCheck, CalendarClock, MapPin, BadgeDollarSign, LayoutDashboard } from "lucide-react";
+import { LogOut, Car, Tags, ShieldCheck, CalendarClock, MapPin, BadgeDollarSign, LayoutDashboard, IdCard } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import AdminLogin from "./AdminLogin";
 import VehicleList from "./fleet/VehicleList";
@@ -10,6 +10,7 @@ import BookingsManager from "./bookings/BookingsManager";
 import AdminMapPanel from "./map/AdminMapPanel";
 import SalesDashboard from "./sales/SalesDashboard";
 import ReportsDashboard from "./reports/ReportsDashboard";
+import KycManager from "./kyc/KycManager";
 import { Spinner } from "./ui";
 
 const TABS = [
@@ -17,6 +18,7 @@ const TABS = [
   { id: "fleet", label: "Flotte & annonces", icon: Car },
   { id: "bookings", label: "Réservations", icon: CalendarClock },
   { id: "sales", label: "Ventes", icon: BadgeDollarSign },
+  { id: "kyc", label: "KYC", icon: IdCard },
   { id: "map", label: "Carte GPS", icon: MapPin },
   { id: "categories", label: "Catégories", icon: Tags },
 ];
@@ -186,6 +188,7 @@ export default function AdminApp() {
         {tab === "fleet" && <VehicleList />}
         {tab === "bookings" && <BookingsManager />}
         {tab === "sales" && <SalesDashboard />}
+        {tab === "kyc" && <KycManager />}
         {tab === "map" && <AdminMapPanel />}
         {tab === "categories" && <CategoryManager />}
       </main>

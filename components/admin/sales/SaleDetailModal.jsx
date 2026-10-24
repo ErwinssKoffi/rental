@@ -13,6 +13,7 @@ import {
   formatMoney,
 } from "@/lib/sales";
 import { Btn, Field, Modal, Notice, Pill, TextArea, TextInput } from "../ui";
+import ContractManager from "../documents/ContractManager";
 
 // Étapes du pipeline et synchronisation du statut véhicule
 const VEHICLE_SYNC = {
@@ -47,7 +48,7 @@ export default function SaleDetailModal({ saleId, onClose, onChanged }) {
       .from("vehicle_sales")
       .select(
         `*,
-         vehicle:vehicles(id, slug, brand, model, sale_price, status),
+         vehicle:vehicles(id, slug, brand, model, sale_price, status, plate_number, vin),
          agent:profiles!vehicle_sales_agent_id_fkey(first_name, last_name)`
       )
       .eq("id", saleId)
@@ -249,6 +250,8 @@ export default function SaleDetailModal({ saleId, onClose, onChanged }) {
           </Field>
 
           {error && <Notice type="error">{error}</Notice>}
+
+          <ContractManager kind="sale" sale={sale} />
 
           <div className="flex items-center justify-between gap-3 pt-2 border-t border-white/10">
             <span className="text-[11px] text-white/35">

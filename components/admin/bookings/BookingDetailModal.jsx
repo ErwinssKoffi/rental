@@ -19,6 +19,7 @@ import {
   formatMoney,
 } from "@/lib/bookings";
 import { Btn, Field, Modal, Notice, Pill, TextArea, TextInput } from "../ui";
+import ContractManager from "../documents/ContractManager";
 
 function safeFileName(name) {
   return name
@@ -184,7 +185,7 @@ export default function BookingDetailModal({ bookingId, onClose, onChanged }) {
       .from("bookings")
       .select(
         `*,
-         vehicle:vehicles(id, slug, brand, model, status, cover_image_url),
+         vehicle:vehicles(id, slug, brand, model, status, cover_image_url, plate_number, vin),
          customer:profiles!bookings_customer_id_fkey(id, first_name, last_name, phone, email),
          inspections:booking_inspections(*)
        `
@@ -433,6 +434,9 @@ export default function BookingDetailModal({ bookingId, onClose, onChanged }) {
               onSubmit={submitInspection}
             />
           )}
+
+          {/* Contrat PDF */}
+          <ContractManager kind="rental" booking={booking} />
 
           {/* États des lieux existants */}
           {(checkin || checkout) && (
