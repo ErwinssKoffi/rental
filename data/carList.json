@@ -1,0 +1,110 @@
+[
+    {
+        "id": 1,
+        "name": "Aventador S",
+        "type": "Sports",
+        "engine": "V12",
+        "topspeed":"218 KM/H",
+        "fueltype":"Petrol",
+        "year":"2013",
+        "color":"orange",
+        "img":"../images/af.jpg",
+        "fare":"250",
+        "categoryID":"1"
+    },
+    {
+        "id": 2,
+        "name": "Huracan",
+        "type": "Luxury",
+        "engine": "V10",
+        "topspeed":"207 KM/H",
+        "fueltype":"Petrol.",
+        "year":"2014",
+        "color":"green",
+        "img":"../images/hg.webp",
+        "fare":"188",
+        "categoryID":"2"
+    },
+    {
+        "id": 3,
+        "name": "URUS",
+        "type": "SUV",
+        "engine": "V10",
+        "topspeed":"200 KM/H",
+        "fueltype":"Diesel",
+        "year":"2018",
+        "color":"yellow",
+        "img":"../images/urus.webp",
+        "fare":"300",
+        "categoryID":"3"
+    },
+    {
+        "id": 4,
+        "name": "Revuelto",
+        "type": "Sports",
+        "engine": "V12",
+        "topspeed":"234 KM/H",
+        "fueltype":"Hybrid",
+        "year":"2022",
+        "color":"Orange",
+        "img":"../images/revb.jpg",
+        "fare":"450",
+        "categoryID":"1"
+    },
+    {
+        "id": 5,
+        "name": "Centenario",
+        "type": "Luxury",
+        "engine": "V12",
+        "topspeed":"230 KM/H",
+        "fueltype":"Hybrid",
+        "year":"2020",
+        "color":"Carbon-Fibre",
+        "img":"../images/cent.jpg",
+        "fare":"350",
+        "categoryID":"2"
+    },
+    {
+        "id": 6,
+        "name": "Rambo Lambo",
+        "type": "SUV",
+        "engine": "V10",
+        "topspeed":"212 KM/H",
+        "fueltype":"Diesel",
+        "year":"1998",
+        "color":"Red",
+        "img":"../images/ram.jpg",
+        "fare":"120",
+        "categoryID":"3"
+    },
+    {
+        "id": 7,
+        "name": "Veneno",
+        "type": "Sports",
+        "engine": "V12",
+        "topspeed":"290 KM/H",
+        "fueltype":"Hybrid",
+        "year":"2018",
+        "color":"Silver",
+        "img":"../images/ven.jpg",
+        "fare":"1000",
+        "categoryID":"1"
+    },
+    {
+        "id": 8,
+        "name": "Sian",
+        "type": "Luxury",
+        "engine": "V12",
+        "topspeed":"272 KM/H",
+        "fueltype":"Electric",
+        "year":"2022",
+        "color":"Green",
+        "img":"../images/sian.jpg",
+        "fare":"450",
+        "categoryID":"2"
+    }
+    
+    
+    
+    
+]

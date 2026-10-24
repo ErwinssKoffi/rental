@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Volkswagon",
+    "sub": "Major Shareholder",
+    "desc": "The Volkswagen Group acquired Automobili Lamborghini S.p.A. on July 10, 1998. The acquisition was part of a 1998 buying spree by Volkswagen AG chairman Ferdinand Piëch",
+    "image": "../images/volk.png"
+  },
+
+  {
+    "id": 2,
+    "name": "Audi",
+    "sub": "Subsidary Shareholder",
+    "desc": "Audi part of the Volkswagon group is a major subsidiary shareholder of Automobilie Lamborghini",
+    "image": "../images/audi.png"
+  },
+
+  {
+    "id": 3,
+    "name": "Squadra Corse",
+    "sub": "Lamborghini Racing Team",
+    "desc": "Squadra Corse is the name of Automobili Lamborghini's motorsport department. The department provides support to Lamborghini's customers in the field",
+    "image": "../images/lambo.png"
+  },
+  {
+    "id": 4,
+    "name": "Sk Fardeen Been Zaman",
+    "sub": "Lead Designer",
+    "desc": "Graduated from Northern University of Business and Technology Khulna. He completed his BSc in Computer Science and Engineering. He is a skilled designer and developer.",
+    "image": "../images/lambo.png"
+  }
+]
