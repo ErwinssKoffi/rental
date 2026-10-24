@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import SignInButton from "@/components/ui/SignInButton";
+import NotificationBell from "@/components/layout/NotificationBell";
 import AuthModal from "@/components/auth/AuthModal";
 import ListYourCarButton from "@/components/ui/ListYourCarButton";
 import ListCarModal from "@/components/modals/ListCarModal";
@@ -178,6 +179,9 @@ export default function Navbar() {
             }}
             className="desktop-ctas"
           >
+            {/* Notifications in-app (clients connectés uniquement) */}
+            <NotificationBell />
+
             {/* Sign In */}
             <SignInButton onClick={() => setAuthOpen(true)} />
 
@@ -323,6 +327,9 @@ export default function Navbar() {
 
           {/* CTAs */}
           <div style={{ padding: "0 16px 32px", display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "4px" }}>
+              <NotificationBell placement="top" />
+            </div>
             <button onClick={() => { setMenuOpen(false); setAuthOpen(true); }}
               className="font-body font-semibold uppercase"
               style={{ display: "block", width: "100%", textAlign: "center", padding: "14px", fontSize: "12px", letterSpacing: "0.15em", color: "#ffffff", textDecoration: "none", border: "1px solid rgba(212,175,55,0.45)", borderRadius: "12px", transition: "all 0.3s ease", background: "transparent", cursor: "pointer" }}

@@ -25,6 +25,7 @@ import {
   LEAD_STATUS_TONES,
 } from "@/lib/sales";
 import KycDocuments from "./KycDocuments";
+import CustomerContracts from "./CustomerContracts";
 import { Pill, Spinner, Notice, Btn } from "@/components/admin/ui";
 
 function StatusPill({ status }) {

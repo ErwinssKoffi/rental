@@ -1,15 +1,17 @@
 // Edge Function : réception des webhooks de positions Traccar.
 // Authentification par secret partagé (en-tête x-traccar-secret), puis
-// écriture en clé service_role (contourne la RLS, aucune insertion anonyme
-// n'est permise par les politiques de la table vehicle_locations).
+// écriture en clé service_role via l'API PostgREST (contourne la RLS,
+// aucune insertion anonyme n'est permise par les politiques de
+// vehicle_locations).
+//
+// Zéro dépendance externe : seules les API natives Deno sont utilisées
+// (les modules distants ne sont pas bundlés lors d'un déploiement via l'API).
 //
 // Formats de payload acceptés :
 //   1. Évènement Traccar : { device: { uniqueId }, position: { ... } }
 //   2. Lot de positions   : { device: { uniqueId }, positions: [ ... ] }
 //   3. Position aplatie   : { uniqueId, latitude, longitude, ... }
 //   4. Tableau de l'une de ces trois formes
-
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 interface PositionPayload {
   latitude?: number;
@@ -69,10 +71,55 @@ function normalize(body: unknown): NormalizedMessage[] {
     // Cas 3 : position aplatie avec uniqueId
     const flatId =
       (item.uniqueId as string) ?? (item.unique_id as string) ?? null;
-    if (flatId) out.push({ uniqueId: flatId, positions: [item as PositionPayload] });
+    if (flatId) {
+      out.push({ uniqueId: flatId, positions: [item as PositionPayload] });
+    }
   }
 
   return out;
+}
+
+const BASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const REST_HEADERS: Record<string, string> = {
+  apikey: SERVICE_KEY,
+  Authorization: `Bearer ${SERVICE_KEY}`,
+  "Content-Type": "application/json",
+};
+
+// Résout tracker_device_id → vehicle_id via PostgREST.
+async function resolveVehicle(uniqueId: string): Promise<string | null> {
+  const url =
+    `${BASE_URL}/rest/v1/vehicles?select=id&tracker_device_id=eq.` +
+    encodeURIComponent(uniqueId);
+  const res = await fetch(url, { headers: REST_HEADERS });
+  if (!res.ok) return null;
+  const rows = await res.json();
+  return Array.isArray(rows) && rows.length ? rows[0].id : null;
+}
+
+async function insertLocation(row: Record<string, unknown>): Promise<string | null> {
+  const res = await fetch(`${BASE_URL}/rest/v1/vehicle_locations`, {
+    method: "POST",
+    headers: { ...REST_HEADERS, Prefer: "return=minimal" },
+    body: JSON.stringify(row),
+  });
+  return res.ok ? null : `insert_${res.status}: ${await res.text()}`;
+}
+
+async function mirrorLastPosition(
+  vehicleId: string,
+  wkt: string
+): Promise<string | null> {
+  const res = await fetch(
+    `${BASE_URL}/rest/v1/vehicles?id=eq.${encodeURIComponent(vehicleId)}`,
+    {
+      method: "PATCH",
+      headers: { ...REST_HEADERS, Prefer: "return=minimal" },
+      body: JSON.stringify({ last_location: wkt }),
+    }
+  );
+  return res.ok ? null : `update_${res.status}: ${await res.text()}`;
 }
 
 Deno.serve(async (req) => {
@@ -98,12 +145,6 @@ Deno.serve(async (req) => {
     return json({ error: "unrecognized_payload" }, 422);
   }
 
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    { auth: { persistSession: false } }
-  );
-
   // Cache device → vehicle sur la durée de l'invocation
   const vehicleCache = new Map<string, string | null>();
   const summary = {
@@ -116,12 +157,7 @@ Deno.serve(async (req) => {
   for (const message of messages) {
     let vehicleId = vehicleCache.get(message.uniqueId) ?? null;
     if (!vehicleCache.has(message.uniqueId)) {
-      const { data: vehicle } = await supabase
-        .from("vehicles")
-        .select("id")
-        .eq("tracker_device_id", message.uniqueId)
-        .maybeSingle();
-      vehicleId = vehicle?.id ?? null;
+      vehicleId = await resolveVehicle(message.uniqueId);
       vehicleCache.set(message.uniqueId, vehicleId);
     }
 
@@ -140,36 +176,31 @@ Deno.serve(async (req) => {
       }
 
       const wkt = `SRID=4326;POINT(${lng} ${lat})`;
-      const { error: insertError } = await supabase
-        .from("vehicle_locations")
-        .insert({
-          vehicle_id: vehicleId,
-          location: wkt,
-          speed: p.speed ?? null,
-          heading: p.course ?? p.heading ?? null,
-          accuracy: p.accuracy ?? null,
-          engine_status:
-            typeof p.ignition === "boolean"
-              ? p.ignition
-                ? "on"
-                : "off"
-              : null,
-          battery: p.battery ?? null,
-          recorded_at: p.deviceTime ?? p.fixTime ?? new Date().toISOString(),
-          source: "traccar",
-        });
+      const insertError = await insertLocation({
+        vehicle_id: vehicleId,
+        location: wkt,
+        speed: p.speed ?? null,
+        heading: p.course ?? p.heading ?? null,
+        accuracy: p.accuracy ?? null,
+        engine_status:
+          typeof p.ignition === "boolean"
+            ? p.ignition
+              ? "on"
+              : "off"
+            : null,
+        battery: p.battery ?? null,
+        recorded_at: p.deviceTime ?? p.fixTime ?? new Date().toISOString(),
+        source: "traccar",
+      });
 
       if (insertError) {
-        summary.errors.push(insertError.message);
+        summary.errors.push(insertError);
         continue;
       }
 
       // Miroir de la dernière position sur la fiche véhicule
-      const { error: updateError } = await supabase
-        .from("vehicles")
-        .update({ last_location: wkt })
-        .eq("id", vehicleId);
-      if (updateError) summary.errors.push(updateError.message);
+      const updateError = await mirrorLastPosition(vehicleId, wkt);
+      if (updateError) summary.errors.push(updateError);
 
       summary.inserted++;
     }
