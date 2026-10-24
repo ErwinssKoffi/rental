@@ -1,53 +1,46 @@
-# Car Renting Website Using Next.js
-A university project made with Next.js and Tailwind CSS. Car renting store that has different car categories to choose from and rent. All images, videos, logo's are property of Automobili Lamborghini group. I do not own them. Used them for education purpose only. 
+<img width="2559" height="1230" alt="screenshot png" src="https://github.com/user-attachments/assets/442d87b1-cc55-4b00-9eb5-421832dd4d3c" />
 
-## Features
+# 🚗 Car Rental Platform
 
-- 3 Categories of Car (Sedan, Sports, SUV).
-- User can select a category and them cars according to that category.
-- User can rent a car from his choice of selection.
-- User can contact using a contact form.
-- Optimized for mobile screen.
+A modern and responsive car rental platform built with Next.js.
 
-## Tech Stack
+## 🌐 Live Demo
 
-**Client:** Next.js, TailwindCSS
+https://[car-liard-five.vercel.app](https://car-7its.vercel.app/)
 
-## Installation
+## ✨ Features
 
-Install/Update necessary node packages
+- Browse available cars
+- Car details page
+- Search and filtering
+- Responsive design
+- Modern UI/UX
+- Fast performance
+
+## 🛠️ Tech Stack
+
+- Next.js
+- React
+- JavaScript
+- Tailwind CSS
+
+## 🚀 Getting Started
 
 ```bash
-  npm i
-  
+npm install
+npm run dev
 ```
 
-## Running Tests
+## 📂 Project Structure
 
-To run the app on your machine, run the following command
-
-```bash
-  npm run start
-
-  or
-
-  npm start
+```
+app/
+components/
+data/
+lib/
+public/
 ```
 
-## FAQ
+## 👨‍💻 Author
 
-#### Does is have any backend?
-
-Ans: No, the app doesn't have any backend. All info are stored locally.
-
-#### Where does my credentials go?
-
-Ans: They are stored on your localStorage of your brower.
-
-### Does renting work?
-
-Ans: No, technically. It just accpets the credentials from the from and redirects you to different page.
-
-## Support
-
-To know more, email fardeen.cse20@gmail.com
+Dalin Alkuwatli![Uploading Screenshot 2026-07-09 164907.png…]()
